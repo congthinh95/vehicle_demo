@@ -108,19 +108,19 @@
             android:text="---" />
 
         <TextView
-            android:id="@+id/txt_orther"
+            android:id="@+id/txt_Odometer"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Orther_Infor"
+            android:text="Odometer"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txt_outorther"
+            android:id="@+id/txt_OutOdometer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Null" />
+            android:text="0 km" />
     </LinearLayout>
 
     <LinearLayout

@@ -58,6 +58,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     private  TextView Text_OutSpeed;
     private  TextView Text_OutEngine;
     private  TextView Text_OutGear;
+    private  TextView Text_OutOdometer;
 
     private Connected connected = Connected.False;
     private boolean initialStart = true;
@@ -153,12 +154,15 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         img_phanh = view.findViewById(R.id.img_phanh);
 
         Text_OutSpeed = view.findViewById(R.id.txt_outspeed);
-        Text_OutSpeed.setTextColor(getResources().getColor(R.color.colorAccent));
+        Text_OutSpeed.setTextColor(getResources().getColor(R.color.colorRecieveText));
         //Text_OutSpeed.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         Text_OutEngine = view.findViewById(R.id.txt_outEngineSpeed);
         Text_OutEngine.setTextColor(getResources().getColor(R.color.colorRecieveText));
         //Text_OutEngine.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+        Text_OutOdometer = view.findViewById(R.id.txt_OutOdometer);
+        Text_OutOdometer.setTextColor(getResources().getColor(R.color.colorRecieveText));
 
         Text_OutGear = view.findViewById(R.id.txt_outgear);
         Text_OutGear.setTextColor(getResources().getColor(R.color.colorRecieveText));
@@ -402,65 +406,88 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             /*
                 Format: StartByte-Data(Char)-StopByte
              */
-                int temp_num_byte = 1;
-                status_message_valid = true;
-                if (data_array[temp_num_byte] == '1') {
-                    img_door.setVisibility(View.VISIBLE);
-                } else {
-                    img_door.setVisibility(View.INVISIBLE);
-                }
-                temp_num_byte++;
-                if (data_array[temp_num_byte] == '1') {
-                    img_phanh.setVisibility(View.VISIBLE);
-                } else {
-                    img_phanh.setVisibility(View.INVISIBLE);
-                }
-                temp_num_byte++;
-                if (data_array[temp_num_byte] == '1') {
-                    img_dayantoan.setVisibility(View.VISIBLE);
-                } else {
-                    img_dayantoan.setVisibility(View.INVISIBLE);
-                }
+            int temp_num_byte = 1;
+            status_message_valid = true;
+            if (data_array[temp_num_byte] == '1') {
+                img_door.setVisibility(View.VISIBLE);
+            } else {
+                img_door.setVisibility(View.INVISIBLE);
+            }
+            temp_num_byte++;
+            if (data_array[temp_num_byte] == '1') {
+                img_phanh.setVisibility(View.VISIBLE);
+            } else {
+                img_phanh.setVisibility(View.INVISIBLE);
+            }
+            temp_num_byte++;
+            if (data_array[temp_num_byte] == '1') {
+                img_dayantoan.setVisibility(View.VISIBLE);
+            } else {
+                img_dayantoan.setVisibility(View.INVISIBLE);
+            }
+            temp_num_byte++;
+            char[] speed_array = {0, 0, 0};
+            speed_array[0] = data_array[temp_num_byte];
+            temp_num_byte++;
+            speed_array[1] = data_array[temp_num_byte];
+            temp_num_byte++;
+            speed_array[2] = data_array[temp_num_byte];
+            temp_num_byte++;
 
-                char[] speed_array = {0, 0, 0};
-                speed_array[0] = data_array[temp_num_byte];
-                temp_num_byte++;
-                speed_array[1] = data_array[temp_num_byte];
-                temp_num_byte++;
-                speed_array[2] = data_array[temp_num_byte];
-                temp_num_byte++;
+            Text_OutSpeed.setText(new String(speed_array)+ " km/h");
 
-                Text_OutSpeed.setText(new String(speed_array)+ " km/h");
+            char[] eng_speed_array = {0, 0, 0, 0, 0};
+            eng_speed_array[0] = data_array[temp_num_byte];temp_num_byte++;
+            eng_speed_array[1] = data_array[temp_num_byte];temp_num_byte++;
+            eng_speed_array[2] = data_array[temp_num_byte];temp_num_byte++;
+            eng_speed_array[3] = data_array[temp_num_byte];temp_num_byte++;
+            eng_speed_array[4] = data_array[temp_num_byte];temp_num_byte++;
+            Text_OutEngine.setText(new String(eng_speed_array)+ " rpm");
 
-                char[] eng_speed_array = {0, 0, 0, 0, 0};
-                eng_speed_array[0] = data_array[temp_num_byte];temp_num_byte++;
-                eng_speed_array[1] = data_array[temp_num_byte];temp_num_byte++;
-                eng_speed_array[2] = data_array[temp_num_byte];temp_num_byte++;
-                eng_speed_array[3] = data_array[temp_num_byte];temp_num_byte++;
-                eng_speed_array[4] = data_array[temp_num_byte];temp_num_byte++;
-                Text_OutEngine.setText(new String(eng_speed_array)+ " rpm");
+            char tempchar = data_array[temp_num_byte];
+            if (tempchar == '0') {
+                Text_OutGear.setText("P");
+            }
+            else if (tempchar == '1')
+            {
+                Text_OutGear.setText("N");
+            }
+            else if (tempchar == '2')
+            {
+                Text_OutGear.setText("D");
+            }
+            else if (tempchar == '3')
+            {
+                Text_OutGear.setText("R");
+            }
+            else if (tempchar == '4')
+            {
+                Text_OutGear.setText("S");
+            }
+            else if (tempchar == '5')
+            {
+                Text_OutGear.setText("L");
+            }
+            else
+            {
+                Text_OutGear.setText("Invalid");
+            }
+            temp_num_byte++;
 
-                char tempchar = data_array[temp_num_byte];
-                if (tempchar == '0') {
-                    Text_OutGear.setText("P");
-                }
-                else if (tempchar == '1')
-                {
-                    Text_OutGear.setText("N");
-                }
-                else if (tempchar == '2')
-                {
-                    Text_OutGear.setText("D");
-                }
-                else if (tempchar == '3')
-                {
-                    Text_OutGear.setText("R");
-                }
-                ///////Clear all value//////
-                temp_byte = 0x00;
-                end_frame = 0x00;
-                count = 0;
-                status_message_valid = false;
+            char[] Odometer_array = {0, 0, 0, 0, 0, 0};
+            Odometer_array[0] = data_array[temp_num_byte];temp_num_byte++;
+            Odometer_array[1] = data_array[temp_num_byte];temp_num_byte++;
+            Odometer_array[2] = data_array[temp_num_byte];temp_num_byte++;
+            Odometer_array[3] = data_array[temp_num_byte];temp_num_byte++;
+            Odometer_array[4] = data_array[temp_num_byte];temp_num_byte++;
+            Odometer_array[5] = data_array[temp_num_byte];temp_num_byte++;
+            Text_OutOdometer.setText(new String(Odometer_array)+ " km");
+
+            ///////Clear all value//////
+            temp_byte = 0x00;
+            end_frame = 0x00;
+            count = 0;
+            status_message_valid = false;
         }
 
 //        /////////////////////////////////////////////////
