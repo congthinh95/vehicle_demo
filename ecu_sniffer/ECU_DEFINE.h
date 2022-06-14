@@ -1,0 +1,9 @@
+#ifndef ECU_DEFINE_H_
+#define ECU_DEFINE_
+
+#define MESSEAGE_ENGINE_SPEED 0x17C
+#define MESSEAGE_CVT_191 0x191
+#define MESSEAGE_SRS_305 0x305
+#define MESSEAGE_ODO_294 0x294
+
+#endif /* CAN_H_ */
