@@ -7,7 +7,7 @@ struct can_frame canMsg;
 MCP2515 mcp2515(10);
 
 unsigned long previousMillis = 0;    
-const long interval = 50; //50ms Interval
+const long interval = 100; //100ms Interval
 
 #define len_buffer_send 20
 char send_value[len_buffer_send];
@@ -25,9 +25,9 @@ void loop() {
   if (mcp2515.readMessage(&canMsg) == MCP2515::ERROR_OK) {
     SG_ADAS_Processing(canMsg, &send_value[0], len_buffer_send); 
   }
-  Task_50ms();
+  Task_100ms();
 }
-void Task_50ms()
+void Task_100ms()
 {
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
